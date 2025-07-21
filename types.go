@@ -22,6 +22,7 @@ type User struct {
 type Attendance struct {
 	UserID     int64
 	AttendedAt time.Time
+	Type       string // "CheckIn" / "CheckOut" / "OvertimeIn" / "OvertimeOut"
 }
 
 func (r Response) String() string {

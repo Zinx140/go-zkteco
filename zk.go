@@ -3,14 +3,15 @@ package gozk
 import (
 	"errors"
 	"fmt"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
 	"io"
 	"log"
 	"net"
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 
 	"github.com/canhlinh/log4go"
 )
@@ -260,12 +261,12 @@ func (zk *ZK) GetZktecoUsers() ([]*User, error) {
 }
 
 // GetAttendances returns a list of attendances
+// GetAttendances returns a list of attendances
 func (zk *ZK) GetAttendances() ([]*Attendance, error) {
-	/*
-		if err := zk.GetUsers(); err != nil {
-			return nil, err
-		}
-	*/
+	if err := zk.GetUsers(); err != nil {
+		return nil, err
+	}
+
 	records, err := zk.readSize()
 	if err != nil {
 		return nil, err
@@ -282,12 +283,13 @@ func (zk *ZK) GetAttendances() ([]*Attendance, error) {
 
 	totalSizeByte := data[:4]
 	data = data[4:]
+
 	totalSize := mustUnpack([]string{"I"}, totalSizeByte)[0].(int)
 	recordSize := totalSize / records
-	attendances := make([]*Attendance, 0)
+	attendances := []*Attendance{}
 
 	if recordSize == 8 || recordSize == 16 {
-		return nil, errors.New("sorry I don't support this kind of device. I'm lazy")
+		return nil, errors.New("Sorry I don't support this kind of device. I'm lazy")
 	}
 
 	for len(data) >= 40 {
@@ -306,7 +308,32 @@ func (zk *ZK) GetAttendances() ([]*Attendance, error) {
 			return nil, err
 		}
 
-		attendances = append(attendances, &Attendance{AttendedAt: timestamp, UserID: userID})
+		// Ambil mode dari record (posisi index ke-2)
+		modeVal := v[4]
+		mode, ok := modeVal.(int)
+		if !ok {
+			return nil, fmt.Errorf("unexpected type for mode: %T", modeVal)
+		}
+
+		var typeStr string
+		switch mode {
+		case 0:
+			typeStr = "CheckIn"
+		case 1:
+			typeStr = "CheckOut"
+		case 3:
+			typeStr = "OvertimeIn"
+		case 4:
+			typeStr = "OvertimeOut"
+		default:
+			typeStr = "Unknown"
+		}
+
+		attendances = append(attendances, &Attendance{
+			AttendedAt: timestamp,
+			UserID:     userID,
+			Type:       typeStr,
+		})
 		data = data[40:]
 	}
 
