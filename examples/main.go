@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	gozk "github.com/stones-hub/go-zkteco"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	gozk "github.com/Zinx140/go-zkteco"
 )
 
 func main() {
