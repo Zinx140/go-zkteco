@@ -321,9 +321,9 @@ func (zk *ZK) GetAttendances() ([]*Attendance, error) {
 			typeStr = "CheckIn"
 		case 1:
 			typeStr = "CheckOut"
-		case 3:
-			typeStr = "OvertimeIn"
 		case 4:
+			typeStr = "OvertimeIn"
+		case 5:
 			typeStr = "OvertimeOut"
 		default:
 			typeStr = "Unknown"
