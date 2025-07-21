@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	gozk "github.com/Zinx140/go-zkteco"
+	gozk "github.com/zinx140/go-zkteco"
 )
 
 func main() {
