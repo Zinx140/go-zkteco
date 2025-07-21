@@ -1,4 +1,4 @@
-module github.com/stones-hub/go-zkteco
+module github.com/Zinx140/go-zkteco
 
 require (
 	github.com/canhlinh/go-binary-pack v0.0.0-20181203110405-72348cf47f32
